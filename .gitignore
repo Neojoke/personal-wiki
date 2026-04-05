@@ -1,11 +1,5 @@
 # LLM Wiki 知识库
 
-## 原始资料
-raw/
-
-## 生成的 Wiki
-wiki/
-
 ## 依赖
 node_modules/
 
