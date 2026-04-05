@@ -1,14 +1,6 @@
 {
-  "obsidian-web-clipper": {
-    "enabled": true
-  },
-  "marp-slides": {
-    "enabled": true
-  },
-  "dataview": {
-    "enabled": true
-  },
-  "advanced-tables": {
-    "enabled": true
-  }
+  "obsidian-web-clipper": true,
+  "marp-slides": true,
+  "obsidian-dataview": true,
+  "obsidian-advanced-tables": true
 }
