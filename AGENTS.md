@@ -84,7 +84,7 @@ confidence: high | medium | low
 ```yaml
 ---
 title: 页面标题
-type: journal | health | reflection | goal
+type: journal | health | reflection | goal | area | project | action  # ✅ 扩展：增加楼层类型
 date: YYYY-MM-DD
 mood: 心情状态（可选）
 energy: 1 | 2 | 3 | 4 | 5（可选）
@@ -92,6 +92,8 @@ tags: [标签]
 related: [wiki/ 页面路径列表，使用 [[wikilink]] 格式]
 ---
 ```
+
+**注意**：如 `type` 为 `goal/area/project/action`，必须遵守 [`wiki/goals/GOALS-SPEC.md`](wiki/goals/GOALS-SPEC.md) 中的完整规范。
 
 ### Frontmatter 字段说明
 
@@ -430,6 +432,27 @@ git commit -m "ingest: [文章标题]"
 | 版本 | 日期 | 变更 | 原因 |
 |------|------|------|------|
 | 1.0 | 2026-04-05 | 初始版本 | 基于 Karpathy Gist，适配个人知识库 |
+| 1.1 | 2026-04-05 | 添加 GTD 楼层视野目标规范 | 用户提出需求，模块化设计 |
+
+---
+
+## 🏢 个人目标规范（GTD 楼层视野）
+
+**规范文档**：[`wiki/goals/GOALS-SPEC.md`](wiki/goals/GOALS-SPEC.md)
+
+**核心要点**：
+- GTD 楼层视野分类（5F/4F/3F/2F/1F/地面）
+- 目标 Frontmatter 规范（扩展模板 B）
+- 楼层对齐规则（aligned_above / aligned_below）
+- 目标设定/周回顾/季度回顾工作流
+
+**LLM 必读**：处理目标相关页面时，必须先读取 `wiki/goals/GOALS-SPEC.md`
+
+**快速链接**：
+- [GTD 楼层分类](wiki/goals/GOALS-SPEC.md#gtd-楼层视野分类)
+- [Frontmatter 规范](wiki/goals/GOALS-SPEC.md#frontmatter-规范)
+- [楼层对齐规则](wiki/goals/GOALS-SPEC.md#楼层对齐规则)
+- [LLM 工作流](wiki/goals/GOALS-SPEC.md#llm-工作流)
 
 ---
 
