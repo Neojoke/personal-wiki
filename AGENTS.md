@@ -1,39 +1,48 @@
-# LLM Wiki Schema
+# Personal Wiki Schema
 
-> **这是 LLM Wiki 的核心配置文件**
+> **这是 Personal Wiki 的核心配置文件**
 > 
 > LLM 每次会话开始时，必须先读取本文件
 > 
-> 版本：1.1 | 基于：Karpathy Gist (2026-04-04)
+> 版本：1.0 | 基于：Karpathy Gist (2026-04-04)
+> 
+> **严格模式**：本 Schema 定义了严格的规范，LLM 必须遵守
 
 ---
 
 ## 📁 项目结构
 
 ```
-llm-wiki/
-├── raw/                    # 原始资料（LLM 只读，禁止修改）
-│   ├── articles/           # 网络文章、博客
-│   ├── papers/             # 学术论文
-│   ├── repos/              # GitHub 仓库笔记
-│   ├── data/               # 数据集、CSV、JSON
-│   └── assets/             # 图片、附件（本地存储）
+personal-wiki/
+├── raw/                          # 原始资料（LLM 只读，禁止修改）
+│   ├── articles/                 # 网络文章、博客
+│   ├── papers/                   # 学术论文
+│   ├── journal/                  # 日记
+│   ├── podcast/                  # 播客笔记
+│   ├── repos/                    # GitHub 仓库笔记
+│   ├── data/                     # 数据集、CSV、JSON、健康数据
+│   └── assets/                   # 图片、附件（本地存储）
 │
-├── wiki/                   # LLM 生成的知识库（LLM 完全拥有）
-│   ├── index.md            # 主目录（每次摄入必须更新）
-│   ├── log.md              # 活动日志（追加式）
-│   ├── overview.md         # 高层综合/概述
-│   ├── concepts/           # 概念页面
-│   ├── entities/           # 实体页面（公司、人物、组织）
-│   ├── sources/            # 源文档摘要
-│   └── comparisons/        # 对比分析
+├── wiki/                         # LLM 生成的知识库（LLM 完全拥有）
+│   ├── index.md                  # 主目录（每次摄入必须更新）
+│   ├── log.md                    # 活动日志（追加式）
+│   ├── overview.md               # 高层综合/概述
+│   │
+│   ├── concepts/                 # 概念页面（通用）
+│   ├── entities/                 # 实体页面（通用）
+│   ├── sources/                  # 源文档摘要（通用）
+│   ├── comparisons/              # 对比分析（通用）
+│   │
+│   ├── goals/                    # 目标追踪（个人）
+│   ├── health/                   # 健康记录（个人）
+│   └── reflections/              # 反思/心理状态（个人）
 │
-├── sharing/                # 分享卡片导出（可选）
-│   ├── red/                # 小红书风格图片
-│   ├── quotes/             # 渐变文字卡片
-│   └── cards/              # 内容卡片
+├── sharing/                      # 分享卡片导出（可选）
+│   ├── red/                      # 小红书风格图片
+│   ├── quotes/                   # 渐变文字卡片
+│   └── cards/                    # 内容卡片
 │
-└── AGENTS.md               # 本 Schema 文件（LLM 必读）
+└── AGENTS.md                     # 本 Schema 文件（LLM 必读）
 ```
 
 ### 核心规则
@@ -49,14 +58,16 @@ llm-wiki/
 
 ## 📄 页面规范
 
-### YAML Frontmatter
+### Frontmatter 模板
 
-**每个 wiki 页面必须包含以下 frontmatter：**
+#### 模板 A：通用页面（concepts/entities/sources/comparisons）
+
+**必填字段**，缺少任何字段都是错误：
 
 ```yaml
 ---
 title: 页面标题
-type: concept | entity | source-summary | comparison | overview
+type: concept | entity | source-summary | comparison
 tags: [标签 1, 标签 2, 标签 3]
 sources: [raw/ 文件路径列表]
 related: [wiki/ 页面路径列表，使用 [[wikilink]] 格式]
@@ -66,109 +77,80 @@ confidence: high | medium | low
 ---
 ```
 
+#### 模板 B：个人页面（journal/health/reflections/goals）
+
+**必填字段**，缺少任何字段都是错误：
+
+```yaml
+---
+title: 页面标题
+type: journal | health | reflection | goal
+date: YYYY-MM-DD
+mood: 心情状态（可选）
+energy: 1 | 2 | 3 | 4 | 5（可选）
+tags: [标签]
+related: [wiki/ 页面路径列表，使用 [[wikilink]] 格式]
+---
+```
+
 ### Frontmatter 字段说明
 
-| 字段 | 类型 | 必填 | 说明 |
-|------|------|------|------|
-| `title` | string | ✅ | 页面标题 |
-| `type` | string | ✅ | 页面类型（见下方说明） |
-| `tags` | string[] | ✅ | 标签列表，用于分类和检索 |
-| `sources` | string[] | ✅ | 引用的原始资料路径 |
-| `related` | string[] | ✅ | 关联的 wiki 页面（使用 `[[wikilink]]` 格式） |
-| `created` | date | ✅ | 创建日期（YYYY-MM-DD） |
-| `updated` | date | ✅ | 最后更新日期 |
-| `confidence` | string | ✅ | 置信度（high/medium/low） |
+| 字段 | 类型 | 必填 | 适用模板 | 说明 |
+|------|------|------|---------|------|
+| `title` | string | ✅ | A+B | 页面标题 |
+| `type` | string | ✅ | A+B | 页面类型 |
+| `tags` | string[] | ✅ | A+B | 标签列表 |
+| `sources` | string[] | ✅ | A | 引用的原始资料路径 |
+| `related` | string[] | ✅ | A+B | 关联的 wiki 页面 |
+| `created` | date | ✅ | A | 创建日期 |
+| `updated` | date | ✅ | A | 最后更新日期 |
+| `confidence` | string | ✅ | A | 置信度 |
+| `date` | date | ✅ | B | 日期（日记/健康记录等） |
+| `mood` | string | ⚠️ | B | 心理状态（可选） |
+| `energy` | number | ⚠️ | B | 能量等级 1-5（可选） |
 
 ### 页面类型说明
 
 | 类型 | 位置 | 用途 |
 |------|------|------|
-| `concept` | `wiki/concepts/` | 概念、理论、方法（如：attention-mechanism） |
-| `entity` | `wiki/entities/` | 公司、人物、组织、产品（如：openai） |
+| `concept` | `wiki/concepts/` | 概念、理论、方法 |
+| `entity` | `wiki/entities/` | 公司、人物、组织、产品 |
 | `source-summary` | `wiki/sources/` | 单个源文档的摘要 |
 | `comparison` | `wiki/comparisons/` | 对比分析、横向比较 |
-| `overview` | `wiki/` | 高层综合、领域概述 |
-
-### 页面内容结构
-
-```markdown
----
-title: 注意力机制
-type: concept
-tags: [深度学习，Transformer, NLP]
-sources: [raw/papers/attention-is-all-you-need.pdf]
-related: [[transformer-架构], [缩放定律], [tokenization]]
-created: 2026-04-05
-updated: 2026-04-05
-confidence: high
----
-
-# 注意力机制
-
-## 核心定义
-
-一句话定义：注意力机制是一种...
-
-## 关键要点
-
-1. **要点一**：说明文字
-2. **要点二**：说明文字
-3. **要点三**：说明文字
-
-## 详细解释
-
-正文内容，包含：
-- 背景
-- 原理
-- 公式（如适用）
-- 应用场景
-
-## 与其他概念的关系
-
-- 与 [[概念 A]] 的关系：说明
-- 与 [[概念 B]] 的关系：说明
-
-## 来源依据
-
-- 📄 [源文档 1](raw/...)：关键引用
-- 📄 [源文档 2](raw/...)：关键引用
-
-## 待确认/疑问
-
-- [ ] 需要进一步验证的点
-- [ ] 存在矛盾的信息
-
----
-*最后更新：2026-04-05 | 置信度：high*
-```
+| `journal` | `wiki/reflections/` | 日记/反思 |
+| `health` | `wiki/health/` | 健康记录 |
+| `reflection` | `wiki/reflections/` | 心理状态/自我反思 |
+| `goal` | `wiki/goals/` | 目标追踪 |
 
 ---
 
-## ⚙️ Workflows
+## ⚙️ Workflows（严格模式）
 
 ### 1️⃣ Ingest（摄入）工作流
 
 **触发**：用户将新源文件放入 `raw/` 并说 "ingest [文件名]"
 
-**LLM 执行步骤：**
+**LLM 必须执行的步骤**：
 
 ```
 1. 读取源文件（raw/ 中）
 2. 与用户讨论关键要点（输出摘要）
-3. 创建/更新摘要页（wiki/sources/）
-4. 更新相关概念页（wiki/concepts/）
-5. 更新相关实体页（wiki/entities/）
-6. 更新主目录（wiki/index.md）
-7. 追加活动日志（wiki/log.md）
-8. 提交 git commit
+3. 创建 Ingest 计划（列出将创建/更新的页面）
+4. 【严格】等待用户确认后才能继续
+5. 创建/更新摘要页（wiki/sources/）
+6. 更新相关概念页（wiki/concepts/）
+7. 更新相关实体页（wiki/entities/）
+8. 更新主目录（wiki/index.md）【严格】
+9. 追加活动日志（wiki/log.md）【严格】
+10. Git 提交
 ```
 
-**输出格式：**
+**输出格式（必须）**：
 
 ```markdown
 ## Ingest 计划
 
-**源文件**: `raw/articles/2026-04-moe-efficiency.md`
+**源文件**: `raw/articles/[文件名].md`
 
 ### 关键要点
 1. 要点一
@@ -176,21 +158,23 @@ confidence: high
 3. 要点三
 
 ### 将创建/更新的页面
-- ✅ 新建：`wiki/sources/summary-moe-efficiency.md`
-- 🔄 更新：`wiki/concepts/mixture-of-experts.md`
-- 🔄 更新：`wiki/concepts/scaling-laws.md`
+- ✅ 新建：`wiki/sources/summary-[主题].md`
+- 🔄 更新：`wiki/concepts/[概念].md`
 - 🔄 更新：`wiki/index.md`
 - 📝 追加：`wiki/log.md`
 
 ### 发现的矛盾/问题
-- ⚠️ 与 `wiki/concepts/dense-vs-sparse.md` 的声明矛盾
+- ⚠️ [如果有]
 
 **是否继续？** [等待用户确认]
 ```
 
-**重要**：
-- ✅ 优先逐个 ingest（用户参与度高，质量控制好）
-- ⚠️ 批量 ingest 仅在用户明确要求时使用
+**严格规则**：
+- ✅ 必须逐个 ingest（禁止批量，除非用户明确要求）
+- ✅ 必须等待用户确认
+- ✅ 必须更新 index.md
+- ✅ 必须追加 log.md
+- ✅ 必须使用一致的 log 前缀格式
 
 ---
 
@@ -198,16 +182,16 @@ confidence: high
 
 **触发**：用户提出问题
 
-**LLM 执行步骤：**
+**LLM 必须执行的步骤**：
 
 ```
-1. 读取 wiki/index.md 定位相关页面
+1. 读取 wiki/index.md 定位相关页面【严格】
 2. 读取相关 wiki 页面
-3. 综合答案，使用 [[wikilink]] 引用
+3. 综合答案，使用 [[wikilink]] 引用【严格】
 4. 如答案有价值，提议存为新页面
 ```
 
-**输出格式：**
+**输出格式（必须）**：
 
 ```markdown
 ## 回答
@@ -224,9 +208,10 @@ confidence: high
 💡 **建议存档**：这个分析很有价值，是否存为 `wiki/comparisons/[主题].md`？
 ```
 
-**重要**：
-- ✅ 好的答案应该存回 wiki，让探索也"复合增长"
-- ✅ 支持多种输出形式：markdown 页面、对比表、幻灯片（Marp）、图表
+**严格规则**：
+- ✅ 必须先读 index.md
+- ✅ 必须使用 [[wikilink]] 引用
+- ✅ 必须提议存档有价值的分析
 
 ---
 
@@ -234,7 +219,7 @@ confidence: high
 
 **触发**：用户说 "lint" 或 "健康检查"
 
-**LLM 执行步骤：**
+**LLM 必须执行的步骤**：
 
 ```
 1. 扫描所有 wiki 页面
@@ -243,7 +228,7 @@ confidence: high
 4. 建议修复操作
 ```
 
-**输出格式：**
+**输出格式（必须）**：
 
 ```markdown
 ## Wiki 健康报告 (YYYY-MM-DD)
@@ -255,30 +240,26 @@ confidence: high
 
 ### 📄 孤立页面 (N)
 - `wiki/concepts/xxx.md` - 无入链
-- `wiki/sources/yyy.md` - 无引用
 
 ### ❓ 缺失页面 (N)
 - "概念 X" 被提及 N 次，无独立页面
-- "实体 Y" 被提及 N 次，无独立页面
-
-### 📊 统计
-- 总页面数：N
-- 本周新增：N
-- 平均置信度：high/medium/low
 
 ### 💡 建议调查
 - 缺少 [主题] 的源文档
-- [实体页] 信息太薄（仅 N 个源）
-- [概念页] 超过 N 天未更新
 ```
 
 **频率建议**：每周一次，或摄入 10+ 源后
 
 ---
 
-## 📋 index.md 规范
+## 📋 index.md 规范（严格）
 
-**格式：**
+**更新规则**：
+- ✅ 每次 ingest **必须**更新 index.md
+- ✅ 新增页面**必须**添加到对应分类
+- ✅ 每个条目**必须**有一句话摘要 + 源数量
+
+**格式（必须）**：
 
 ```markdown
 # Wiki Index
@@ -288,42 +269,29 @@ confidence: high
 ## 📚 Concepts
 
 - [[attention-mechanism]] — 自注意力、多头注意力及变体 (12 个源)
-- [[mixture-of-experts]] — 稀疏 MoE 架构、路由策略 (8 个源)
-- [[scaling-laws]] — Chinchilla、Kaplan 定律 (15 个源)
 
 ## 🏢 Entities
 
 - [[openai]] — GPT 系列、组织历史 (20 个源)
-- [[anthropic]] — Claude 系列、宪法 AI (14 个源)
 
 ## 📄 Source Summaries
 
-| 标题 | 日期 | 类型 |
-|------|------|------|
-| [[summary-attention-revisited]] | 2026-03-15 | 论文 |
-| [[summary-moe-efficiency]] | 2026-04-01 | 文章 |
+- [[summary-attention-revisited]] — 2026-04-05
 
-## 📊 Comparisons
+## 🎯 Goals
 
-- [[moe-routing-strategies]] — MoE 路由策略对比
-- [[rag-vs-finetuning]] — RAG vs 微调权衡
+- [[goal-fitness-2026]] — 2026 年健身目标
+
+## 📔 Journal
+
+- [[journal-2026-04-05]] — 2026-04-05
 ```
-
-**更新规则：**
-- ✅ 每次 ingest 必须更新 index.md
-- ✅ 新增页面时添加到对应分类
-- ✅ 保持每个条目有一句话摘要 + 源数量
-
-**作用**：
-- 🎯 替代 RAG 的检索机制
-- 🎯 LLM 先读 index（几千 token），找到相关页面再深入阅读
-- 🎯 在中等规模（~100 源，~数百页）下工作良好
 
 ---
 
-## 📝 log.md 规范
+## 📝 log.md 规范（严格）
 
-**格式：**
+**格式（必须）**：
 
 ```markdown
 # Activity Log
@@ -332,21 +300,25 @@ confidence: high
 Source: `raw/articles/文件名.md`
 Pages created: `wiki/sources/summary-xxx.md`
 Pages updated: `wiki/concepts/aaa.md`, `wiki/entities/bbb.md`
-Notes: 关键备注（如矛盾标记）
+Notes: 关键备注
 
 ## [YYYY-MM-DD] query | 查询主题
 Question: 用户问题
 Pages read: 读取的页面列表
-Output: 输出形式（答案/存档页面）
+Output: 输出形式
 
 ## [YYYY-MM-DD] lint | 健康检查
 Contradictions found: N
 Orphan pages: N
 Missing pages suggested: N
-Actions taken: 执行的修复操作
 ```
 
-**解析技巧：**
+**严格规则**：
+- ✅ 必须使用 `## [YYYY-MM-DD] type | 标题` 前缀
+- ✅ 必须是追加式（禁止修改已有内容）
+- ✅ 必须可被 unix 工具解析
+
+**解析命令**：
 ```bash
 # 最近 5 条记录
 grep "^## \[" wiki/log.md | tail -5
@@ -354,11 +326,6 @@ grep "^## \[" wiki/log.md | tail -5
 # 本月 ingest 数量
 grep "^## .* ingest" wiki/log.md | grep "$(date +%Y-%m)" | wc -l
 ```
-
-**作用**：
-- 📅 追加式时间线
-- 🔍 LLM 通过读最近 log 了解当前状态
-- 🛠️ 可被 unix 工具解析
 
 ---
 
@@ -392,16 +359,6 @@ grep "^## .* ingest" wiki/log.md | grep "$(date +%Y-%m)" | wc -l
 
 **触发**：用户插入卡片代码块
 
-**示例**：
-```markdown
-```book
-title: 深度工作
-author: 卡尔·纽波特
-rating: ⭐⭐⭐⭐⭐
-tags: [生产力，学习]
-```
-```
-
 **LLM 执行**：
 1. 渲染卡片
 2. 可选导出到 `sharing/cards/`
@@ -424,17 +381,11 @@ tags: [生产力，学习]
 
 ### qmd（可选，大规模时）
 
-当 wiki 超过 100 页，index.md 太大时考虑安装：
+当 wiki 超过 100 页时考虑安装：
 
 ```bash
-# 安装
 npm install -g @tobilu/qmd
-
-# 添加集合
-qmd collection add ./wiki --name llm-wiki
-
-# 搜索
-qmd query "关键词" --json
+qmd collection add ./wiki --name personal-wiki
 ```
 
 ### Git
@@ -443,30 +394,25 @@ qmd query "关键词" --json
 # 每次 ingest 后提交
 git add .
 git commit -m "ingest: [文章标题]"
-
-# 查看历史
-git log --oneline
-
-# 回滚
-git revert HEAD
 ```
 
 ---
 
 ## 🎯 最佳实践
 
-### ✅ 应该做的
+### ✅ 必须做的
 
-- [ ] 每次 ingest 只处理一个源（用户可参与）
-- [ ] 保持 frontmatter 完整
+- [ ] 每次 ingest 只处理一个源
+- [ ] 保持 frontmatter 完整（必填字段不能缺少）
 - [ ] 使用 `[[wikilink]]` 创建内部链接
 - [ ] 定期运行 lint（建议每周）
 - [ ] 将优质查询答案存档为 wiki 页面
 - [ ] 图片本地化存储到 `raw/assets/`
 - [ ] 每次 ingest 后 git commit
-- [ ] 用 index.md 导航（小规模时不需要 qmd）
+- [ ] 每次 ingest 后更新 index.md
+- [ ] 每次 ingest 后追加 log.md
 
-### ❌ 不应该做的
+### ❌ 禁止做的
 
 - [ ] 修改 `raw/` 中的任何文件
 - [ ] 跳过 index.md 更新
@@ -474,25 +420,26 @@ git revert HEAD
 - [ ] 使用绝对路径或外部链接代替 wikilink
 - [ ] 删除页面（如需要，标记为 `deprecated`）
 - [ ] 在 wiki 中引用未下载的 URL 图片
+- [ ] 批量 ingest（除非用户明确要求）
+- [ ] 跳过用户确认直接写入
 
 ---
 
-## 📈 规模建议
+## 🔄 Schema 变更日志
 
-| 规模 | 源文档数 | Wiki 页数 | 检索方式 | 工具 |
-|------|---------|----------|----------|------|
-| **初期** | 1-50 | 1-100 | index.md | 基础插件 |
-| **中期** | 50-200 | 100-500 | index.md + Dataview | + Marp |
-| **长期** | 200+ | 500+ | qmd 搜索 | + qmd |
+| 版本 | 日期 | 变更 | 原因 |
+|------|------|------|------|
+| 1.0 | 2026-04-05 | 初始版本 | 基于 Karpathy Gist，适配个人知识库 |
 
 ---
 
-## 🔄 Schema 版本
+## 📚 参考资料
 
-| 版本 | 日期 | 变更 |
-|------|------|------|
-| 1.0 | 2026-04-05 | 初始版本（基于 Karpathy Gist） |
-| 1.1 | 2026-04-05 | 添加分享卡片工作流 |
+本文档基于 Andrej Karpathy 的 LLM Wiki Idea File：
+
+- **Gist**: https://gist.github.com/karpathy/442a6bf555914893e9891c11519de94f
+- **获取方式**: `gh gist view 442a6bf555914893e9891c11519de94f`
+- **第一个摄入源**: `raw/articles/karpathy-llm-wiki-idea-file.md`
 
 ---
 
@@ -503,17 +450,17 @@ git revert HEAD
 ### 人机分工
 
 **你（用户）负责**：
--  curated 源文档
--  探索和思考
--  问对的问题
--  审查和批准
+- curated 源文档
+- 探索和思考
+- 问对的问题
+- 审查和批准
 
 **LLM 负责**：
--  总结
--  交叉引用
--  归档
--  簿记
--  维护一致性
+- 总结
+- 交叉引用
+- 归档
+- 簿记
+- 维护一致性
 
 ### 复合增长
 

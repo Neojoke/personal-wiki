@@ -1,14 +1,24 @@
-# LLM Wiki
+# Personal Wiki
 
 > 基于 Karpathy "Idea File" 架构的个人知识库系统
 > 
 > **Obsidian 是 IDE；LLM 是程序员；Wiki 是代码库**
+> 
+> **严格模式**：本 Wiki 采用严格的结构化规范，确保知识的一致性和可维护性
 
 ---
 
 ## 🎯 项目定位
 
-**主题**：LLM 技术研究与知识库
+**用途**：个人知识库
+
+**追踪内容**：
+- 🎯 自己的目标
+- 💪 健康状况
+- 🧠 心理状态
+- 📈 自我提升
+- 📔 日记条目
+- 📰 文章/播客笔记
 
 **理念**：
 - ❌ 不用 RAG（每次查询重新发现知识）
@@ -26,30 +36,34 @@
 ### 三层结构
 
 ```
-llm-wiki/
-├── raw/                    # 原始资料（LLM 只读，禁止修改）
-│   ├── articles/           # 网络文章、博客
-│   ├── papers/             # 学术论文
-│   ├── repos/              # GitHub 仓库笔记
-│   ├── data/               # 数据集、CSV、JSON
-│   └── assets/             # 图片、附件（本地存储）
+personal-wiki/
+├── raw/                          # 原始资料（LLM 只读，禁止修改）
+│   ├── articles/                 # 网络文章、博客
+│   ├── papers/                   # 学术论文
+│   ├── journal/                  # 日记
+│   ├── podcast/                  # 播客笔记
+│   ├── repos/                    # GitHub 仓库笔记
+│   ├── data/                     # 数据集、CSV、JSON
+│   └── assets/                   # 图片、附件（本地存储）
 │
-├── wiki/                   # LLM 生成的知识库（LLM 完全拥有）
-│   ├── index.md            # 主目录（每次摄入必须更新）
-│   ├── log.md              # 活动日志（追加式）
-│   ├── overview.md         # 高层综合/概述
-│   ├── concepts/           # 概念页面
-│   ├── entities/           # 实体页面（公司、人物、组织）
-│   ├── sources/            # 源文档摘要
-│   └── comparisons/        # 对比分析
+├── wiki/                         # LLM 生成的知识库（LLM 完全拥有）
+│   ├── index.md                  # 主目录（每次摄入必须更新）
+│   ├── log.md                    # 活动日志（追加式）
+│   ├── overview.md               # 高层综合/概述
+│   ├── concepts/                 # 概念页面（通用）
+│   ├── entities/                 # 实体页面（通用）
+│   ├── sources/                  # 源文档摘要（通用）
+│   ├── comparisons/              # 对比分析（通用）
+│   ├── goals/                    # 目标追踪（个人）
+│   ├── health/                   # 健康记录（个人）
+│   └── reflections/              # 反思/心理状态（个人）
 │
-├── sharing/                # 分享卡片导出（可选）
-│   ├── red/                # 小红书风格图片
-│   ├── quotes/             # 渐变文字卡片
-│   └── cards/              # 内容卡片
+├── sharing/                      # 分享卡片导出（可选）
+│   ├── red/                      # 小红书风格图片
+│   ├── quotes/                   # 渐变文字卡片
+│   └── cards/                    # 内容卡片
 │
-├── AGENTS.md               # Schema 文件（LLM 必读）
-└── README.md               # 本文件
+└── AGENTS.md                     # Schema 文件（LLM 必读）
 ```
 
 ### 核心规则
@@ -68,15 +82,15 @@ llm-wiki/
 ### 1. 克隆仓库
 
 ```bash
-git clone https://github.com/Neojoke/llm-wiki.git
-cd llm-wiki
+git clone https://github.com/Neojoke/personal-wiki.git
+cd personal-wiki
 ```
 
 ### 2. 用 Obsidian 打开
 
 1. 安装 [Obsidian](https://obsidian.md)
 2. 打开 Obsidian → 添加文件夹作为 Vault
-3. 选择 `llm-wiki` 目录
+3. 选择 `personal-wiki` 目录
 
 ### 3. 安装插件（推荐）
 
@@ -97,10 +111,10 @@ cd llm-wiki
 # 安装 Web Clipper 浏览器扩展 → 剪藏文章到 raw/articles/
 
 # 方法 2：手动放入
-# 下载 PDF/文章 → 放入 raw/papers/ 或 raw/articles/
+# 下载 PDF/文章 → 放入 raw/articles/ 或 raw/papers/
 
-# 方法 3：命令行
-echo "# 我的笔记" > raw/articles/test.md
+# 方法 3：使用已有源
+# raw/articles/karpathy-llm-wiki-idea-file.md（Karpathy Gist）
 ```
 
 然后对 Agent 说：
@@ -110,83 +124,81 @@ echo "# 我的笔记" > raw/articles/test.md
 
 ## 📋 核心操作
 
-### Ingest（摄入）
+### Ingest（摄入）【严格模式】
 
 **触发**：放入新源文件到 `raw/` 并说 "ingest [文件名]"
 
 **LLM 执行**：
 1. 读取源文件
 2. 与用户讨论关键要点
-3. 创建摘要页（`wiki/sources/`）
-4. 更新相关概念/实体页
-5. 更新主目录（`wiki/index.md`）
-6. 追加活动日志（`wiki/log.md`）
-7. Git 提交
+3. 创建 Ingest 计划
+4. **【严格】等待用户确认**
+5. 创建摘要页（`wiki/sources/`）
+6. 更新相关概念/实体页
+7. 更新主目录（`wiki/index.md`）【严格】
+8. 追加活动日志（`wiki/log.md`）【严格】
+9. Git 提交
 
 **示例**：
 ```markdown
 # 用户
-我添加了新文章到 raw/articles/2026-04-moe-efficiency.md
+我添加了新文章到 raw/articles/2026-04-goals.md
 请摄入它
 
 # LLM
 ## Ingest 计划
 
-**源文件**: `raw/articles/2026-04-moe-efficiency.md`
+**源文件**: `raw/articles/2026-04-goals.md`
 
 ### 关键要点
-1. MoE 模型实现 4 倍吞吐量
-2. 路由效率提升 23%
-3. 与 wiki 中"dense 模型更高效"的声明矛盾
+1. 要点一
+2. 要点二
+3. 要点三
 
 ### 将创建/更新的页面
-- ✅ 新建：`wiki/sources/summary-moe-efficiency.md`
-- 🔄 更新：`wiki/concepts/mixture-of-experts.md`
-- 🔄 更新：`wiki/concepts/scaling-laws.md`
+- ✅ 新建：`wiki/sources/summary-goals.md`
+- 🔄 更新：`wiki/goals/2026-fitness.md`
 - 🔄 更新：`wiki/index.md`
 - 📝 追加：`wiki/log.md`
-
-### 发现的矛盾/问题
-- ⚠️ 与 `wiki/concepts/dense-vs-sparse.md` 的声明矛盾
 
 **是否继续？** [等待用户确认]
 ```
 
 ---
 
-### Query（查询）
+### Query（查询）【严格模式】
 
 **触发**：用户提出问题
 
 **LLM 执行**：
-1. 读取 `wiki/index.md` 定位相关页面
+1. 读取 `wiki/index.md` 定位相关页面【严格】
 2. 读取相关 wiki 页面
-3. 综合答案，使用 `[[wikilink]]` 引用
+3. 综合答案，使用 `[[wikilink]]` 引用【严格】
 4. 如答案有价值，提议存为新页面
 
 **示例**：
 ```markdown
 # 用户
-比较我们源中 MoE 模型的路由策略
+我最近的能量水平如何？
 
 # LLM
 ## 回答
 
-[综合答案内容]
+根据过去 30 天的健康记录，你的平均能量水平为 3.8/5...
 
 ### 引用来源
-- [[mixture-of-experts]]：关键信息
-- [[summary-moe-efficiency]]：关键信息
-- [[scaling-laws]]：关键信息
+- [[health-2026-04-01]]：能量 4
+- [[health-2026-04-02]]：能量 3
+- [[health-2026-04-03]]：能量 4
 
 ---
 
-💡 **建议存档**：这个分析很有价值，是否存为 `wiki/comparisons/moe-routing-strategies.md`？
+💡 **建议存档**：是否将月度总结存为 `wiki/health/summary-2026-04.md`？
 ```
 
 ---
 
-### Lint（健康检查）
+### Lint（健康检查）【严格模式】
 
 **触发**：用户说 "lint" 或 "健康检查"
 
@@ -196,31 +208,7 @@ echo "# 我的笔记" > raw/articles/test.md
 3. 生成健康报告
 4. 建议修复操作
 
-**示例**：
-```markdown
-# 用户
-lint the wiki
-
-# LLM
-## Wiki 健康报告 (2026-04-05)
-
-### ❌ 矛盾 (2)
-1. **concepts/dense-vs-sparse.md** vs **sources/summary-moe-efficiency.md**
-   - 矛盾点：dense 模型效率声明
-   - 建议：更新为 nuanced 描述
-
-### 📄 孤立页面 (3)
-- `wiki/concepts/tokenization.md` - 无入链
-- `wiki/sources/summary-old-bert-paper.md` - 无引用
-
-### ❓ 缺失页面 (4)
-- "RLHF" 被提及 12 次，无概念页
-- "Constitutional AI" 被提及 8 次，无页面
-
-### 💡 建议调查
-- 缺少 2025 年后的推理优化源
-- Meta AI 实体页太薄（仅 1 个源）
-```
+**频率建议**：每周一次
 
 ---
 
@@ -244,8 +232,8 @@ lint the wiki
 
 **AGENTS.md** 是这个项目的核心配置文件，告诉 LLM：
 - 目录结构是什么
-- 页面格式规范
-- 工作流如何执行
+- 页面格式规范（两种 frontmatter 模板）
+- 工作流如何执行（严格模式）
 - 什么能做，什么不能做
 
 **LLM 每次会话开始时，必须先读取 AGENTS.md**
@@ -256,17 +244,17 @@ lint the wiki
 
 ## 🎯 使用场景
 
-### 1. 技术研究
-深入某个领域（如 LLM 推理优化），阅读论文、文章，构建综合 Wiki
+### 1. 目标追踪
+记录短期/长期目标，LLM 帮助追踪进度、提醒回顾
 
-### 2. 读书笔记本
-每章做笔记，LLLM 维护角色/主题/情节页面
+### 2. 健康记录
+每日健康数据（能量、心情、运动），LLM 生成趋势分析
 
-### 3. 竞争分析
-跟踪竞品动态，LLM 自动整理时间线、功能对比
+### 3. 日记/反思
+每日日记，LLM 帮助识别模式、关联事件
 
-### 4. 学习课程
-课程笔记 + 概念整理 + 习题解答
+### 4. 文章/播客笔记
+剪藏内容，LLM 提取要点、关联已有知识
 
 ### 5. 分享卡片
 用 Note to RED / Quote Share 把知识变成精美图片分享
@@ -275,63 +263,78 @@ lint the wiki
 
 ## 📈 最佳实践
 
-### ✅ 应该做的
+### ✅ 必须做的
 
-- [ ] 每次 ingest 只处理一个源（用户参与）
-- [ ] 保持 frontmatter 完整
+- [ ] 每次 ingest 只处理一个源
+- [ ] 保持 frontmatter 完整（必填字段不能缺少）
 - [ ] 使用 `[[wikilink]]` 创建内部链接
 - [ ] 定期运行 lint（建议每周）
 - [ ] 将优质查询答案存档为 wiki 页面
 - [ ] 图片本地化存储到 `raw/assets/`
 - [ ] 每次 ingest 后 git commit
+- [ ] 每次 ingest 后更新 index.md
+- [ ] 每次 ingest 后追加 log.md
 
-### ❌ 不应该做的
+### ❌ 禁止做的
 
 - [ ] 修改 `raw/` 中的任何文件
 - [ ] 跳过 index.md 更新
 - [ ] 创建无 frontmatter 的页面
 - [ ] 使用绝对路径或外部链接代替 wikilink
 - [ ] 删除页面（如需要，标记为 `deprecated`）
+- [ ] 批量 ingest（除非用户明确要求）
 
 ---
 
-## 🔄 版本历史
+## 🔄 Schema 变更日志
 
 | 版本 | 日期 | 变更 |
 |------|------|------|
 | 1.0 | 2026-04-05 | 初始版本（基于 Karpathy Gist） |
-| 1.1 | 2026-04-05 | 添加分享卡片功能 |
 
 ---
 
 ## 📚 参考资料
 
 - **Karpathy Gist**: [LLM Wiki Idea File](https://gist.github.com/karpathy/442a6bf555914893e9891c11519de94f)
-- **VentureBeat 报道**: [Karpathy's LLM Knowledge Base](https://venturebeat.com/data/karpathy-shares-llm-knowledge-base-architecture-that-bypasses-rag-with-an)
-- **完整指南**: [Karpathy's LLM Wiki: Complete Guide](https://antigravity.codes/blog/karpathy-llm-wiki-idea-file)
+- **获取方式**: `gh gist view 442a6bf555914893e9891c11519de94f`
+- **第一个摄入源**: `raw/articles/karpathy-llm-wiki-idea-file.md`
 
 ---
 
 ## 🚀 下一步
 
-1. **摄入第一个源**
+### 立即开始
+
+1. **打开 Obsidian**
    ```bash
-   # 剪藏一篇文章或手动放入 raw/articles/
-   # 然后对 Agent 说："ingest [文件名]"
+   obsidian://open?vault=personal-wiki
    ```
 
-2. **运行第一次 Lint**
+2. **启用插件**
+   - 设置 → 社区插件
+   - 启用 7 个插件
+
+3. **摄入第一个源**
    ```bash
-   # 摄入 10+ 源后
-   # 对 Agent 说："lint the wiki"
+   # Karpathy Gist 已保存在 raw/articles/
+   # 对 Agent 说："Ingest raw/articles/karpathy-llm-wiki-idea-file.md"
    ```
 
-3. **分享你的知识**
-   ```bash
-   # 用 Note to RED 导出小红书图片
-   # 用 Quote Share 生成渐变卡片
-   ```
+4. **查看效果**
+   - 打开 `wiki/index.md` 查看目录
+   - 打开 `wiki/log.md` 查看活动记录
+
+### 10 源测试
+
+Karpathy 建议的里程碑：
+
+```
+摄入 10 个源 → 问一个综合问题 → 验证系统是否给出独特洞察
+```
+
+如果系统能给你阅读单个源得不到的洞察，说明工作正常！
 
 ---
 
-**开始构建你的知识库吧！** 🧠✨
+**开始构建你的个人知识库吧！** 🧠✨
