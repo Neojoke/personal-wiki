@@ -1,7 +1,10 @@
 # LLM Wiki Schema
 
-> 本文件定义 LLM Wiki 的结构、规范和 workflows。
-> LLM 必须严格遵守此 schema，确保知识库的一致性和可维护性。
+> **这是 LLM Wiki 的核心配置文件**
+> 
+> LLM 每次会话开始时，必须先读取本文件
+> 
+> 版本：1.1 | 基于：Karpathy Gist (2026-04-04)
 
 ---
 
@@ -9,30 +12,37 @@
 
 ```
 llm-wiki/
-├── AGENTS.md           # 本 schema 文件
-├── raw/                # 原始资料（LLM 只读，禁止修改）
-│   ├── articles/       # 网络文章、博客
-│   ├── papers/         # 学术论文
-│   ├── repos/          # GitHub 仓库笔记
-│   ├── data/           # 数据集、CSV、JSON
-│   └── assets/         # 图片、附件（本地存储）
-├── wiki/               # LLM 生成的知识库（LLM 完全拥有）
-│   ├── index.md        # 主目录（每次摄入必须更新）
-│   ├── log.md          # 活动日志（追加式）
-│   ├── overview.md     # 高层综合/概述
-│   ├── concepts/       # 概念页面
-│   ├── entities/       # 实体页面（公司、人物、组织）
-│   ├── sources/        # 源文档摘要
-│   └── comparisons/    # 对比分析
-└── .git/               # 版本控制
+├── raw/                    # 原始资料（LLM 只读，禁止修改）
+│   ├── articles/           # 网络文章、博客
+│   ├── papers/             # 学术论文
+│   ├── repos/              # GitHub 仓库笔记
+│   ├── data/               # 数据集、CSV、JSON
+│   └── assets/             # 图片、附件（本地存储）
+│
+├── wiki/                   # LLM 生成的知识库（LLM 完全拥有）
+│   ├── index.md            # 主目录（每次摄入必须更新）
+│   ├── log.md              # 活动日志（追加式）
+│   ├── overview.md         # 高层综合/概述
+│   ├── concepts/           # 概念页面
+│   ├── entities/           # 实体页面（公司、人物、组织）
+│   ├── sources/            # 源文档摘要
+│   └── comparisons/        # 对比分析
+│
+├── sharing/                # 分享卡片导出（可选）
+│   ├── red/                # 小红书风格图片
+│   ├── quotes/             # 渐变文字卡片
+│   └── cards/              # 内容卡片
+│
+└── AGENTS.md               # 本 Schema 文件（LLM 必读）
 ```
 
 ### 核心规则
 
 | 目录 | LLM 权限 | 说明 |
 |------|---------|------|
-| `raw/` | **只读** | 原始资料，LLM 禁止修改或删除 |
-| `wiki/` | **完全拥有** | LLM 创建、更新、维护所有内容 |
+| `raw/` | **只读** | 原始资料，LLM 禁止修改或删除。这是你的 source of truth |
+| `wiki/` | **完全拥有** | LLM 创建、更新、维护所有内容。你读它，LLM 写它 |
+| `sharing/` | **可写** | 导出分享卡片的目标目录 |
 | `AGENTS.md` | **只读** | Schema 文件，仅用户可修改 |
 
 ---
@@ -49,7 +59,7 @@ title: 页面标题
 type: concept | entity | source-summary | comparison | overview
 tags: [标签 1, 标签 2, 标签 3]
 sources: [raw/ 文件路径列表]
-related: [wiki/ 页面路径列表]
+related: [wiki/ 页面路径列表，使用 [[wikilink]] 格式]
 created: YYYY-MM-DD
 updated: YYYY-MM-DD
 confidence: high | medium | low
@@ -73,8 +83,8 @@ confidence: high | medium | low
 
 | 类型 | 位置 | 用途 |
 |------|------|------|
-| `concept` | `wiki/concepts/` | 概念、理论、方法 |
-| `entity` | `wiki/entities/` | 公司、人物、组织、产品 |
+| `concept` | `wiki/concepts/` | 概念、理论、方法（如：attention-mechanism） |
+| `entity` | `wiki/entities/` | 公司、人物、组织、产品（如：openai） |
 | `source-summary` | `wiki/sources/` | 单个源文档的摘要 |
 | `comparison` | `wiki/comparisons/` | 对比分析、横向比较 |
 | `overview` | `wiki/` | 高层综合、领域概述 |
@@ -178,6 +188,10 @@ confidence: high
 **是否继续？** [等待用户确认]
 ```
 
+**重要**：
+- ✅ 优先逐个 ingest（用户参与度高，质量控制好）
+- ⚠️ 批量 ingest 仅在用户明确要求时使用
+
 ---
 
 ### 2️⃣ Query（查询）工作流
@@ -209,6 +223,10 @@ confidence: high
 
 💡 **建议存档**：这个分析很有价值，是否存为 `wiki/comparisons/[主题].md`？
 ```
+
+**重要**：
+- ✅ 好的答案应该存回 wiki，让探索也"复合增长"
+- ✅ 支持多种输出形式：markdown 页面、对比表、幻灯片（Marp）、图表
 
 ---
 
@@ -254,6 +272,8 @@ confidence: high
 - [概念页] 超过 N 天未更新
 ```
 
+**频率建议**：每周一次，或摄入 10+ 源后
+
 ---
 
 ## 📋 index.md 规范
@@ -290,9 +310,14 @@ confidence: high
 ```
 
 **更新规则：**
-- 每次 ingest 必须更新 index.md
-- 新增页面时添加到对应分类
-- 保持每个条目有一句话摘要
+- ✅ 每次 ingest 必须更新 index.md
+- ✅ 新增页面时添加到对应分类
+- ✅ 保持每个条目有一句话摘要 + 源数量
+
+**作用**：
+- 🎯 替代 RAG 的检索机制
+- 🎯 LLM 先读 index（几千 token），找到相关页面再深入阅读
+- 🎯 在中等规模（~100 源，~数百页）下工作良好
 
 ---
 
@@ -330,6 +355,57 @@ grep "^## \[" wiki/log.md | tail -5
 grep "^## .* ingest" wiki/log.md | grep "$(date +%Y-%m)" | wc -l
 ```
 
+**作用**：
+- 📅 追加式时间线
+- 🔍 LLM 通过读最近 log 了解当前状态
+- 🛠️ 可被 unix 工具解析
+
+---
+
+## 🎯 分享卡片工作流
+
+### Note to RED（小红书风格）
+
+**触发**：用户说 "导出小红书" 或 "export to red"
+
+**LLM 执行**：
+1. 确认笔记按 `##` 标题分段
+2. 调用 Note to RED 插件
+3. 导出图片到 `sharing/red/`
+4. 告知用户保存位置
+
+---
+
+### Quote Share（渐变文字卡片）
+
+**触发**：用户选中文字并说 "生成渐变卡片"
+
+**LLM 执行**：
+1. 确认选中的文字
+2. 调用 Quote Share 插件
+3. 选择渐变样式
+4. 保存到 `sharing/quotes/` 或复制到剪贴板
+
+---
+
+### Content Cards（内容卡片）
+
+**触发**：用户插入卡片代码块
+
+**示例**：
+```markdown
+```book
+title: 深度工作
+author: 卡尔·纽波特
+rating: ⭐⭐⭐⭐⭐
+tags: [生产力，学习]
+```
+```
+
+**LLM 执行**：
+1. 渲染卡片
+2. 可选导出到 `sharing/cards/`
+
 ---
 
 ## 🛠️ 工具集成
@@ -342,15 +418,23 @@ grep "^## .* ingest" wiki/log.md | grep "$(date +%Y-%m)" | wc -l
 - **插件**:
   - Marp Slides - 生成幻灯片
   - Dataview - 查询 frontmatter
+  - Note to RED - 小红书导出
+  - Quote Share - 渐变卡片
+  - Content Cards - 内容卡片
 
 ### qmd（可选，大规模时）
 
+当 wiki 超过 100 页，index.md 太大时考虑安装：
+
 ```bash
+# 安装
+npm install -g @tobilu/qmd
+
+# 添加集合
+qmd collection add ./wiki --name llm-wiki
+
 # 搜索
 qmd query "关键词" --json
-
-# 作为 MCP 服务器
-qmd mcp
 ```
 
 ### Git
@@ -373,50 +457,33 @@ git revert HEAD
 
 ### ✅ 应该做的
 
-- 每次 ingest 只处理一个源（用户可参与）
-- 保持 frontmatter 完整
-- 使用 `[[wikilink]]` 创建内部链接
-- 定期运行 lint（建议每周）
-- 将优质查询答案存档为 wiki 页面
-- 图片本地化存储到 `raw/assets/`
+- [ ] 每次 ingest 只处理一个源（用户可参与）
+- [ ] 保持 frontmatter 完整
+- [ ] 使用 `[[wikilink]]` 创建内部链接
+- [ ] 定期运行 lint（建议每周）
+- [ ] 将优质查询答案存档为 wiki 页面
+- [ ] 图片本地化存储到 `raw/assets/`
+- [ ] 每次 ingest 后 git commit
+- [ ] 用 index.md 导航（小规模时不需要 qmd）
 
 ### ❌ 不应该做的
 
-- 修改 `raw/` 中的任何文件
-- 跳过 index.md 更新
-- 创建无 frontmatter 的页面
-- 使用绝对路径或外部链接代替 wikilink
-- 删除页面（如需要，标记为 `deprecated`）
+- [ ] 修改 `raw/` 中的任何文件
+- [ ] 跳过 index.md 更新
+- [ ] 创建无 frontmatter 的页面
+- [ ] 使用绝对路径或外部链接代替 wikilink
+- [ ] 删除页面（如需要，标记为 `deprecated`）
+- [ ] 在 wiki 中引用未下载的 URL 图片
 
 ---
 
-## 📈 扩展建议
+## 📈 规模建议
 
-### 新增页面类型
-
-如需新增类型，更新 `type` 枚举并添加对应目录：
-
-```yaml
-type: decision | meeting-note | project-log
-```
-
-### 新增 frontmatter 字段
-
-```yaml
-# 示例：添加作者字段
-author: 作者名
-status: draft | review | published
-priority: high | medium | low
-```
-
-### 多主题支持
-
-```
-wiki-topic-a/
-wiki-topic-b/
-```
-
-每个主题独立维护 index.md 和 log.md
+| 规模 | 源文档数 | Wiki 页数 | 检索方式 | 工具 |
+|------|---------|----------|----------|------|
+| **初期** | 1-50 | 1-100 | index.md | 基础插件 |
+| **中期** | 50-200 | 100-500 | index.md + Dataview | + Marp |
+| **长期** | 200+ | 500+ | qmd 搜索 | + qmd |
 
 ---
 
@@ -425,6 +492,35 @@ wiki-topic-b/
 | 版本 | 日期 | 变更 |
 |------|------|------|
 | 1.0 | 2026-04-05 | 初始版本（基于 Karpathy Gist） |
+| 1.1 | 2026-04-05 | 添加分享卡片工作流 |
+
+---
+
+## 🧠 核心理念
+
+> **"Obsidian 是 IDE；LLM 是程序员；Wiki 是代码库"**
+
+### 人机分工
+
+**你（用户）负责**：
+-  curated 源文档
+-  探索和思考
+-  问对的问题
+-  审查和批准
+
+**LLM 负责**：
+-  总结
+-  交叉引用
+-  归档
+-  簿记
+-  维护一致性
+
+### 复合增长
+
+- 📥 源文档摄入 → wiki 增长
+- ❓ 查询探索 → 新页面存档
+- 🔍 定期 lint → 健康维护
+- 📤 分享卡片 → 知识传播
 
 ---
 
