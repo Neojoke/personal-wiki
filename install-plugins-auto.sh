@@ -21,7 +21,10 @@ declare -A PLUGINS=(
     ["obsidian-web-clipper"]="Web Clipper|obsidian-web-clipper/obsidian-web-clipper"
     ["marp-slides"]="Marp Slides|phibr0/obsidian-marp-slides"
     ["obsidian-dataview"]="Dataview|blacksmithgu/obsidian-dataview"
-    ["obsidian-advanced-tables"]="Advanced Tabless|tgrosinger/advanced-tables-obsidian"
+    ["obsidian-advanced-tables"]="Advanced Tables|tgrosinger/advanced-tables-obsidian"
+    ["note-to-red"]="Note to RED|yeban/note-to-red"
+    ["quote-share"]="Quote Share|pr4k4rsh/obsidian-quote-share"
+    ["obsidian-content-cards"]="Content Cards|hankzhao/obsidian-content-cards"
 )
 
 # 下载并安装单个插件

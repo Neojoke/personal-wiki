@@ -2,5 +2,8 @@
   "obsidian-web-clipper": true,
   "marp-slides": true,
   "obsidian-dataview": true,
-  "obsidian-advanced-tables": true
+  "obsidian-advanced-tables": true,
+  "note-to-red": true,
+  "quote-share": true,
+  "obsidian-content-cards": true
 }
