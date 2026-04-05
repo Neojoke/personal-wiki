@@ -1,0 +1,14 @@
+{
+  "obsidian-web-clipper": {
+    "enabled": true
+  },
+  "marp-slides": {
+    "enabled": true
+  },
+  "dataview": {
+    "enabled": true
+  },
+  "advanced-tables": {
+    "enabled": true
+  }
+}
